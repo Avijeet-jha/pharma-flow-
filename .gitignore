@@ -1,0 +1,31 @@
+# Dependencies and build output
+**/node_modules/
+**/dist/
+
+# Local environment and secrets
+**/.env
+**/.env.*
+!**/.env.example
+
+# Uploaded user/company documents
+**/uploads/
+
+# Generated Prisma client
+server/node-api/src/generated/prisma/
+
+# Locally installed assistant skill bundles
+**/.agents/
+**/.claude/
+**/.windsurf/
+
+# Local account maintenance scripts with embedded credentials
+server/node-api/create-wholesaler.ts
+server/node-api/reset-password.ts
+server/node-api/reset-pharma-password.ts
+
+# Logs and local tooling
+**/*.log
+**/.DS_Store
+**/.idea/
+**/.vscode/*
+!**/.vscode/extensions.json

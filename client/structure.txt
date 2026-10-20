@@ -1,0 +1,84 @@
+Folder PATH listing for volume New Volume
+Volume serial number is 9E95-9945
+D:\PROJECT\PHARMA FLOW\CLIENT\SRC
+¦   App.css
+¦   App.tsx
+¦   index.css
+¦   main.tsx
+¦   Welcome.tsx
+¦   
++---assets
+¦       hero.png
+¦       react.svg
+¦       vite.svg
+¦       
++---components
+¦   ¦   InventoryTable.tsx
+¦   ¦   Navbar.tsx
+¦   ¦   ProtectedRoute.tsx
+¦   ¦   Sidebar.tsx
+¦   ¦   StatCard.tsx
+¦   ¦   
+¦   +---cards
+¦   ¦       KPICard.tsx
+¦   ¦       
+¦   +---charts
+¦   ¦       AnalyticsPanel.tsx
+¦   ¦       PlatformAnalytics.tsx
+¦   ¦       
+¦   +---dashboard
+¦           NotificationPanel.tsx
+¦           PendingApprovalPanel.tsx
+¦           PlatformHealthPanel.tsx
+¦           RecentActivityPanel.tsx
+¦           
++---layouts
+¦       MainLayout.tsx
+¦       
++---pages
+    ¦   Dashboard.tsx
+    ¦   login.tsx
+    ¦   
+    +---admin
+    ¦   ¦   AdminDashboard.tsx
+    ¦   ¦   CompanyManagement.tsx
+    ¦   ¦   MarketInsights.tsx
+    ¦   ¦   Settings.tsx
+    ¦   ¦   
+    ¦   +---analytics
+    ¦   ¦       CompanyRanking.tsx
+    ¦   ¦       DemandTrends.tsx
+    ¦   ¦       InventoryMovement.tsx
+    ¦   ¦       MedicineUsage.tsx
+    ¦   ¦       
+    ¦   +---company
+    ¦           Companies.tsx
+    ¦           CompanyApprovals.tsx
+    ¦           CompanyDetails.tsx
+    ¦           CompanyDocuments.tsx
+    ¦           CompanyDocumentsList.tsx
+    ¦           CompanyPerformance.tsx
+    ¦           CompanyPerformanceDetails.tsx
+    ¦           RegisterCompany.tsx
+    ¦           
+    +---inventory
+    ¦       InventoryManagement.tsx
+    ¦       
+    +---medicine
+    ¦       MedicineManagement.tsx
+    ¦       
+    +---pharma
+    ¦       PharmaDashboard.tsx
+    ¦       
+    +---retailer
+    ¦       RetailerDashboard.tsx
+    ¦       
+    +---supply-chain
+    ¦       PurchaseOrderManagement.tsx
+    ¦       
+    +---warehouse
+    ¦       WarehouseManagement.tsx
+    ¦       
+    +---wholesaler
+            WholesalerDashboard.tsx
+            
