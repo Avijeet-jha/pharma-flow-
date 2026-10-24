@@ -276,7 +276,11 @@ export const createPurchaseOrderController = async (
       "At least one purchase order item is required",
       "Medicine ID is required for every purchase order item",
       "Purchase order quantity must be greater than zero",
-      "Purchase order quantity must be a positive whole number",
+      "Purchase order quantity must be a positive whole number",    
+      "APPROVED must be updated through its dedicated workflow",
+      "DISPATCHED must be updated through its dedicated workflow",
+          "DELIVERED must be updated through its dedicated workflow",
+   
     ];
 
     if (
