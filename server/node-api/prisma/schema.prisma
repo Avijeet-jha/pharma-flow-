@@ -67,6 +67,29 @@ enum DispatchStatus {
   CANCELLED
 }
 
+enum ReturnReason {
+  WRONG_QUANTITY_OR_MEDICINE
+  DAMAGED_OR_DEFECTIVE
+  EXPIRED_MEDICINE
+  OTHER
+}
+
+enum ReturnRequestStatus {
+  REQUESTED
+  IN_TRANSIT
+  RECEIVED
+  INSPECTING
+  COMPLETED
+  REJECTED
+  CANCELLED
+}
+
+enum ReturnInspectionStatus {
+  PENDING
+  INSPECTED
+  REJECTED
+}
+
 enum SaleStatus {
   DRAFT
   COMPLETED
@@ -130,6 +153,10 @@ model Company {
   // Purchase Requests
   purchaseRequestsAsBuyer  PurchaseRequest[] @relation("BuyerRequests")
   purchaseRequestsAsSeller PurchaseRequest[] @relation("SellerRequests")
+
+  // Return Requests
+  returnsRequested ReturnRequest[] @relation("ReturnBuyer")
+  returnsReceived  ReturnRequest[] @relation("ReturnSeller")
 
   // Customer Balances
   customerBalancesAsPharma     CustomerBalance[] @relation("PharmaBalances")
@@ -275,6 +302,7 @@ model MedicineBatch {
 
   // Invoice items
   invoiceItems InvoiceItem[]
+  returnItems ReturnItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -291,6 +319,8 @@ model Inventory {
   warehouseId String
   batchId     String
   quantity    Int    @default(0)
+  quarantineQuantity Int @default(0)
+  defectiveQuantity  Int @default(0)
 
   warehouse Warehouse @relation(fields: [warehouseId], references: [id])
 
@@ -474,6 +504,7 @@ model Dispatch {
   destinationWarehouse Warehouse @relation("DestinationWarehouse", fields: [destinationWarehouseId], references: [id])
 
   items DispatchItem[]
+  returns ReturnRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -756,4 +787,88 @@ model InvoiceItem {
   @@index([invoiceId])
   @@index([medicineId])
   @@index([batchId])
+}
+
+// =========================================================
+// MEDICINE RETURN REQUEST
+// =========================================================
+
+model ReturnRequest {
+  id String @id @default(uuid())
+
+  // Original delivered dispatch
+  dispatchId String
+
+  // Companies involved in the original transaction
+  buyerCompanyId  String
+  sellerCompanyId String
+
+  // Return workflow status
+  status ReturnRequestStatus @default(REQUESTED)
+
+  // Optional notes for the return request
+  notes String?
+
+  // Workflow timestamps
+  receivedAt  DateTime?
+  inspectedAt DateTime?
+  completedAt DateTime?
+
+  // Relationships
+  dispatch      Dispatch @relation(fields: [dispatchId], references: [id])
+  buyerCompany  Company  @relation("ReturnBuyer", fields: [buyerCompanyId], references: [id])
+  sellerCompany Company  @relation("ReturnSeller", fields: [sellerCompanyId], references: [id])
+
+  // Returned medicines and batches
+  items ReturnItem[]
+
+  // Audit timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Query indexes
+  @@index([dispatchId])
+  @@index([buyerCompanyId])
+  @@index([sellerCompanyId])
+  @@index([status])
+}
+
+// =========================================================
+// MEDICINE RETURN ITEM
+// =========================================================
+
+model ReturnItem {
+  id String @id @default(uuid())
+
+  returnRequestId String
+  batchId         String
+
+  // Quantity the buyer is requesting to return
+  quantity Int
+
+  // Reason selected by the buyer
+  reason ReturnReason
+  description String?
+
+  // Inspection progress
+  inspectionStatus ReturnInspectionStatus @default(PENDING)
+
+  // Final quantity breakdown, recorded during inspection
+  acceptedQuantity    Int @default(0)
+  defectiveQuantity   Int @default(0)
+  expiredQuantity     Int @default(0)
+  quarantinedQuantity Int @default(0)
+
+  notes String?
+
+  returnRequest ReturnRequest @relation(fields: [returnRequestId],references: [id],onDelete: Cascade)
+
+  batch MedicineBatch @relation(fields: [batchId],references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([returnRequestId])
+  @@index([batchId])
+  @@index([inspectionStatus])
 }
