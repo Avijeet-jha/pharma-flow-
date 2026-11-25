@@ -9,7 +9,7 @@ import MainLayout from "./layouts/MainLayout";
 // ============================================================
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import CompanyManagement from "./pages/admin/CompanyManagement";
-import Settings from "./pages/admin/Settings";
+import Settings from "./pages/shared/Settings";
 
 // ============================================================
 // WAREHOUSE
@@ -214,20 +214,6 @@ function App() {
           </ProtectedRoute>
         }
       />
-
-      {/* ------------------------------------------------------
-          Admin - Settings
-      ------------------------------------------------------ */}
-
-      <Route
-        path="/admin/settings"
-        element={
-          <ProtectedRoute allowedRoles={["SUPER_ADMIN"]}>
-            <Settings />
-          </ProtectedRoute>
-        }
-      />
-
       {/* ======================================================
           PHARMA
       ====================================================== */}
@@ -414,6 +400,62 @@ function App() {
         }
       />
     </Routes>
+
+{/* ======================================================
+    SHARED SETTINGS - ALL ROLES
+====================================================== */}
+
+  {/* SUPER ADMIN SETTINGS */ }
+
+  <Route
+    path="/admin/settings"
+    element={
+      <ProtectedRoute allowedRoles={["SUPER_ADMIN"]}>
+        <MainLayout role="admin">
+          <Settings />
+        </MainLayout>
+      </ProtectedRoute>
+    }
+  />
+
+  {/* PHARMA SETTINGS */ }
+
+  <Route
+    path="/pharma/settings"
+    element={
+      <ProtectedRoute allowedRoles={["PHARMA"]}>
+        <MainLayout role="pharma">
+          <Settings />
+        </MainLayout>
+      </ProtectedRoute>
+    }
+  />
+
+  {/* WHOLESALER SETTINGS */ }
+
+  <Route
+    path="/wholesaler/settings"
+    element={
+      <ProtectedRoute allowedRoles={["WHOLESALER"]}>
+        <MainLayout role="wholesaler">
+          <Settings />
+        </MainLayout>
+      </ProtectedRoute>
+    }
+  />
+
+  {/* RETAILER SETTINGS */ }
+
+  <Route
+    path="/retailer/settings"
+    element={
+      <ProtectedRoute allowedRoles={["RETAILER"]}>
+        <MainLayout role="retailer">
+          <Settings />
+        </MainLayout>
+      </ProtectedRoute>
+    }
+  />
   );
 }
 

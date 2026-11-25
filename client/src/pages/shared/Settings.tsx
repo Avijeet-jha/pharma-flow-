@@ -28,8 +28,6 @@ import {
 
 import { useEffect, useState } from "react";
 
-import MainLayout from "../../layouts/MainLayout";
-
 // ==========================================
 // TYPES
 // ==========================================
@@ -870,12 +868,8 @@ function Settings() {
   // ========================================
   // RENDER
   // ========================================
-
   return (
-    <MainLayout role="admin">
-
-      <div className="space-y-6">
-
+  <div className="space-y-6">
         {/* PAGE HEADER */}
 
         <div>
@@ -2831,9 +2825,7 @@ function Settings() {
             </div>
           </div>
         </div>
-      )}
-    </MainLayout>
-  );
+      );
 }
 
 // ==========================================
