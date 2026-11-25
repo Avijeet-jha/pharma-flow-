@@ -991,11 +991,12 @@ function Settings() {
         </div>
       </div>
 
-      {/* ====================================
-          TOAST
-      ==================================== */}
 
-      {showToast && (
+      /* ====================================
+          TOAST
+      ==================================== */
+
+  {showToast && (
         <div
           className="
             fixed
@@ -1016,20 +1017,12 @@ function Settings() {
         >
 
           <div
-            className={`
-              w-9
-              h-9
-              rounded-full
-              flex
-              items-center
-              justify-center
-              font-bold
-              ${
-                toastType === "success"
-                  ? "bg-green-100 text-green-600"
-                  : "bg-red-100 text-red-600"
-              }
-            `}
+            className={
+              "w-9 h-9 rounded-full flex items-center justify-center font-bold " +
+              (toastType === "success"
+                ? "bg-green-100 text-green-600"
+                : "bg-red-100 text-red-600")
+            }
           >
             {toastType === "success"
               ? "✓"
@@ -2825,8 +2818,11 @@ function Settings() {
             </div>
           </div>
         </div>
+
       );
-}
+    }
+  }
+
 
 // ==========================================
 // SETTING CARD

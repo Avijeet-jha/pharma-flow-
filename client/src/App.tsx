@@ -399,64 +399,63 @@ function App() {
           </ProtectedRoute>
         }
       />
-    </Routes>
 
-{/* ======================================================
+      {/* ======================================================
     SHARED SETTINGS - ALL ROLES
 ====================================================== */}
 
-  {/* SUPER ADMIN SETTINGS */ }
+      {/* SUPER ADMIN SETTINGS */}
 
-  <Route
-    path="/admin/settings"
-    element={
-      <ProtectedRoute allowedRoles={["SUPER_ADMIN"]}>
-        <MainLayout role="admin">
-          <Settings />
-        </MainLayout>
-      </ProtectedRoute>
-    }
-  />
+      <Route
+        path="/admin/settings"
+        element={
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN"]}>
+            <MainLayout role="admin">
+              <Settings />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
 
-  {/* PHARMA SETTINGS */ }
+      {/* PHARMA SETTINGS */}
 
-  <Route
-    path="/pharma/settings"
-    element={
-      <ProtectedRoute allowedRoles={["PHARMA"]}>
-        <MainLayout role="pharma">
-          <Settings />
-        </MainLayout>
-      </ProtectedRoute>
-    }
-  />
+      <Route
+        path="/pharma/settings"
+        element={
+          <ProtectedRoute allowedRoles={["PHARMA"]}>
+            <MainLayout role="pharma">
+              <Settings />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
 
-  {/* WHOLESALER SETTINGS */ }
+      {/* WHOLESALER SETTINGS */}
 
-  <Route
-    path="/wholesaler/settings"
-    element={
-      <ProtectedRoute allowedRoles={["WHOLESALER"]}>
-        <MainLayout role="wholesaler">
-          <Settings />
-        </MainLayout>
-      </ProtectedRoute>
-    }
-  />
+      <Route
+        path="/wholesaler/settings"
+        element={
+          <ProtectedRoute allowedRoles={["WHOLESALER"]}>
+            <MainLayout role="wholesaler">
+              <Settings />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
 
-  {/* RETAILER SETTINGS */ }
+      {/* RETAILER SETTINGS */}
 
-  <Route
-    path="/retailer/settings"
-    element={
-      <ProtectedRoute allowedRoles={["RETAILER"]}>
-        <MainLayout role="retailer">
-          <Settings />
-        </MainLayout>
-      </ProtectedRoute>
-    }
-  />
+      <Route
+        path="/retailer/settings"
+        element={
+          <ProtectedRoute allowedRoles={["RETAILER"]}>
+            <MainLayout role="retailer">
+              <Settings />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+        </Routes>
   );
 }
-
 export default App;
