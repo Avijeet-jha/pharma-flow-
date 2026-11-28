@@ -869,7 +869,8 @@ function Settings() {
   // RENDER
   // ========================================
   return (
-  <div className="space-y-6">
+    <>
+      <div className="space-y-6">
         {/* PAGE HEADER */}
 
         <div>
@@ -992,11 +993,11 @@ function Settings() {
       </div>
 
 
-      /* ====================================
-          TOAST
-      ==================================== */
+      {/* ====================================
+         TOAST
+     ==================================== */}
 
-  {showToast && (
+      {showToast && (
         <div
           className="
             fixed
@@ -1588,156 +1589,156 @@ function Settings() {
 
               {activeSection ===
                 "notifications" && (
-                <div className="space-y-5">
+                  <div className="space-y-5">
 
-                  <FormHeader
-                    icon={<Bell size={24} />}
-                    title="Notification Preferences"
-                    description="
+                    <FormHeader
+                      icon={<Bell size={24} />}
+                      title="Notification Preferences"
+                      description="
                       Control which notifications
                       PharmaFlow sends to you.
                     "
-                  />
+                    />
 
-                  <NotificationRow
-                    icon={<Mail size={20} />}
-                    title="Email Notifications"
-                    description="
+                    <NotificationRow
+                      icon={<Mail size={20} />}
+                      title="Email Notifications"
+                      description="
                       Receive important PharmaFlow
                       updates through email.
                     "
-                    enabled={
-                      emailNotifications
-                    }
-                    onChange={
-                      setEmailNotifications
-                    }
-                  />
-
-                  {userRole ===
-                    "SUPER_ADMIN" && (
-                    <NotificationRow
-                      icon={
-                        <FileText size={20} />
+                      enabled={
+                        emailNotifications
                       }
-                      title="Approval Notifications"
-                      description="
+                      onChange={
+                        setEmailNotifications
+                      }
+                    />
+
+                    {userRole ===
+                      "SUPER_ADMIN" && (
+                        <NotificationRow
+                          icon={
+                            <FileText size={20} />
+                          }
+                          title="Approval Notifications"
+                          description="
                         Receive notifications when
                         company approvals require attention.
                       "
-                      enabled={
-                        approvalNotifications
-                      }
-                      onChange={
-                        setApprovalNotifications
-                      }
-                    />
-                  )}
+                          enabled={
+                            approvalNotifications
+                          }
+                          onChange={
+                            setApprovalNotifications
+                          }
+                        />
+                      )}
 
-                  {userRole !==
-                    "SUPER_ADMIN" && (
-                    <>
-                      <NotificationRow
-                        icon={
-                          <Package size={20} />
-                        }
-                        title="Medicine Requests"
-                        description="
+                    {userRole !==
+                      "SUPER_ADMIN" && (
+                        <>
+                          <NotificationRow
+                            icon={
+                              <Package size={20} />
+                            }
+                            title="Medicine Requests"
+                            description="
                           Receive notifications for
                           medicine requests.
                         "
-                        enabled={
-                          medicineRequests
-                        }
-                        onChange={
-                          setMedicineRequests
-                        }
-                      />
-
-                      <NotificationRow
-                        icon={
-                          <ShoppingCart
-                            size={20}
+                            enabled={
+                              medicineRequests
+                            }
+                            onChange={
+                              setMedicineRequests
+                            }
                           />
-                        }
-                        title="Purchase Order Alerts"
-                        description="
+
+                          <NotificationRow
+                            icon={
+                              <ShoppingCart
+                                size={20}
+                              />
+                            }
+                            title="Purchase Order Alerts"
+                            description="
                           Receive updates about purchase
                           order activity.
                         "
-                        enabled={
-                          purchaseOrderAlerts
-                        }
-                        onChange={
-                          setPurchaseOrderAlerts
-                        }
-                      />
+                            enabled={
+                              purchaseOrderAlerts
+                            }
+                            onChange={
+                              setPurchaseOrderAlerts
+                            }
+                          />
 
-                      <NotificationRow
-                        icon={
-                          <Package size={20} />
-                        }
-                        title="Inventory Alerts"
-                        description="
+                          <NotificationRow
+                            icon={
+                              <Package size={20} />
+                            }
+                            title="Inventory Alerts"
+                            description="
                           Receive low-stock and inventory
                           related alerts.
                         "
-                        enabled={
-                          inventoryAlerts
-                        }
-                        onChange={
-                          setInventoryAlerts
-                        }
-                      />
+                            enabled={
+                              inventoryAlerts
+                            }
+                            onChange={
+                              setInventoryAlerts
+                            }
+                          />
 
-                      <NotificationRow
-                        icon={
-                          <Clock3 size={20} />
-                        }
-                        title="Expiry Alerts"
-                        description="
+                          <NotificationRow
+                            icon={
+                              <Clock3 size={20} />
+                            }
+                            title="Expiry Alerts"
+                            description="
                           Receive alerts about medicines
                           approaching expiry.
                         "
-                        enabled={
-                          expiryAlerts
-                        }
-                        onChange={
-                          setExpiryAlerts
-                        }
-                      />
-                    </>
-                  )}
+                            enabled={
+                              expiryAlerts
+                            }
+                            onChange={
+                              setExpiryAlerts
+                            }
+                          />
+                        </>
+                      )}
 
-                  <NotificationRow
-                    icon={
-                      <AlertTriangle size={20} />
-                    }
-                    title="System Alerts"
-                    description="
+                    <NotificationRow
+                      icon={
+                        <AlertTriangle size={20} />
+                      }
+                      title="System Alerts"
+                      description="
                       Receive important system and
                       operational alerts.
                     "
-                    enabled={
-                      systemAlerts
-                    }
-                    onChange={
-                      setSystemAlerts
-                    }
-                  />
-
-                  <div className="flex justify-end pt-2">
-
-                    <SaveButton
-                      onClick={
-                        handleSaveNotifications
+                      enabled={
+                        systemAlerts
+                      }
+                      onChange={
+                        setSystemAlerts
                       }
                     />
 
-                  </div>
+                    <div className="flex justify-end pt-2">
 
-                </div>
-              )}
+                      <SaveButton
+                        onClick={
+                          handleSaveNotifications
+                        }
+                      />
+
+                    </div>
+
+                  </div>
+                )}
 
               {/* =================================
                   LANGUAGE
@@ -1745,41 +1746,41 @@ function Settings() {
 
               {activeSection ===
                 "language" && (
-                <div className="space-y-6">
+                  <div className="space-y-6">
 
-                  <FormHeader
-                    icon={
-                      <Globe size={24} />
-                    }
-                    title="Language & Region"
-                    description="
+                    <FormHeader
+                      icon={
+                        <Globe size={24} />
+                      }
+                      title="Language & Region"
+                      description="
                       Select your preferred language
                       and regional settings.
                     "
-                  />
+                    />
 
-                  <div>
+                    <div>
 
-                    <label
-                      className="
+                      <label
+                        className="
                         block
                         text-sm
                         font-medium
                         text-gray-700
                         mb-2
                       "
-                    >
-                      Preferred Language
-                    </label>
+                      >
+                        Preferred Language
+                      </label>
 
-                    <select
-                      value={language}
-                      onChange={(e) =>
-                        setLanguage(
-                          e.target.value,
-                        )
-                      }
-                      className="
+                      <select
+                        value={language}
+                        onChange={(e) =>
+                          setLanguage(
+                            e.target.value,
+                          )
+                        }
+                        className="
                         w-full
                         border
                         border-gray-300
@@ -1791,84 +1792,84 @@ function Settings() {
                         focus:ring-2
                         focus:ring-blue-500
                       "
-                    >
+                      >
 
-                      <option>
-                        English
-                      </option>
+                        <option>
+                          English
+                        </option>
 
-                      <option>
-                        Hindi
-                      </option>
+                        <option>
+                          Hindi
+                        </option>
 
-                      <option>
-                        Bengali
-                      </option>
+                        <option>
+                          Bengali
+                        </option>
 
-                      <option>
-                        Marathi
-                      </option>
+                        <option>
+                          Marathi
+                        </option>
 
-                      <option>
-                        Telugu
-                      </option>
+                        <option>
+                          Telugu
+                        </option>
 
-                      <option>
-                        Tamil
-                      </option>
+                        <option>
+                          Tamil
+                        </option>
 
-                      <option>
-                        Gujarati
-                      </option>
+                        <option>
+                          Gujarati
+                        </option>
 
-                      <option>
-                        Urdu
-                      </option>
+                        <option>
+                          Urdu
+                        </option>
 
-                      <option>
-                        Kannada
-                      </option>
+                        <option>
+                          Kannada
+                        </option>
 
-                      <option>
-                        Odia
-                      </option>
+                        <option>
+                          Odia
+                        </option>
 
-                    </select>
+                      </select>
 
-                  </div>
+                    </div>
 
-                  <div
-                    className="
+                    <div
+                      className="
                       grid
                       grid-cols-2
                       gap-6
                     "
-                  >
+                    >
 
-                    <InfoBox
-                      label="Country"
-                      value="India"
-                    />
+                      <InfoBox
+                        label="Country"
+                        value="India"
+                      />
 
-                    <InfoBox
-                      label="Time Zone"
-                      value="IST (UTC +5:30)"
-                    />
+                      <InfoBox
+                        label="Time Zone"
+                        value="IST (UTC +5:30)"
+                      />
+
+                    </div>
+
+                    <div className="flex justify-end">
+
+                      <SaveButton
+                        onClick={
+                          handleSaveLanguage
+                        }
+                      />
+
+                    </div>
 
                   </div>
-
-                  <div className="flex justify-end">
-
-                    <SaveButton
-                      onClick={
-                        handleSaveLanguage
-                      }
-                    />
-
-                  </div>
-
-                </div>
-              )}
+                )}
 
               {/* =================================
                   BILLING
@@ -1876,46 +1877,46 @@ function Settings() {
 
               {activeSection ===
                 "billing" && (
-                <div className="space-y-6">
+                  <div className="space-y-6">
 
-                  <FormHeader
-                    icon={
-                      <CreditCard size={24} />
-                    }
-                    title="Billing Preferences"
-                    description="
+                    <FormHeader
+                      icon={
+                        <CreditCard size={24} />
+                      }
+                      title="Billing Preferences"
+                      description="
                       Billing functionality will be
                       available when the subscription
                       module is implemented.
                     "
-                  />
+                    />
 
-                  <div
-                    className="
+                    <div
+                      className="
                       bg-gray-50
                       border
                       border-gray-200
                       rounded-xl
                       p-6
                     "
-                  >
-                    <p
-                      className="
+                    >
+                      <p
+                        className="
                         text-sm
                         text-gray-600
                         leading-6
                       "
-                    >
-                      PharmaFlow currently does not
-                      have a subscription or billing
-                      system in the database schema.
-                      This section is intentionally
-                      kept as a placeholder.
-                    </p>
-                  </div>
+                      >
+                        PharmaFlow currently does not
+                        have a subscription or billing
+                        system in the database schema.
+                        This section is intentionally
+                        kept as a placeholder.
+                      </p>
+                    </div>
 
-                </div>
-              )}
+                  </div>
+                )}
 
               {/* =================================
                   HELP
@@ -2216,81 +2217,81 @@ function Settings() {
 
                   {helpDetail ===
                     "documentation" && (
-                    <div className="space-y-5">
+                      <div className="space-y-5">
 
-                      <BackButton
-                        onClick={
-                          backToSection
-                        }
-                      />
+                        <BackButton
+                          onClick={
+                            backToSection
+                          }
+                        />
 
-                      <FormHeader
-                        icon={
-                          <FileText size={24} />
-                        }
-                        title="Documentation"
-                        description="
+                        <FormHeader
+                          icon={
+                            <FileText size={24} />
+                          }
+                          title="Documentation"
+                          description="
                           Overview of important
                           PharmaFlow modules.
                         "
-                      />
+                        />
 
-                      <HelpRow
-                        icon={
-                          <Package size={20} />
-                        }
-                        title="
+                        <HelpRow
+                          icon={
+                            <Package size={20} />
+                          }
+                          title="
                           Inventory Management
                         "
-                        description="
+                          description="
                           Manage warehouses, stock,
                           batches and inventory transactions.
                         "
-                      />
+                        />
 
-                      <HelpRow
-                        icon={
-                          <ShoppingCart
-                            size={20}
-                          />
-                        }
-                        title="
+                        <HelpRow
+                          icon={
+                            <ShoppingCart
+                              size={20}
+                            />
+                          }
+                          title="
                           Purchase Orders
                         "
-                        description="
+                          description="
                           Create, approve, dispatch and
                           track medicine purchase orders.
                         "
-                      />
+                        />
 
-                      <HelpRow
-                        icon={
-                          <Clock3 size={20} />
-                        }
-                        title="
+                        <HelpRow
+                          icon={
+                            <Clock3 size={20} />
+                          }
+                          title="
                           Expiry Management
                         "
-                        description="
+                          description="
                           Monitor medicine batches that
                           are approaching expiry.
                         "
-                      />
+                        />
 
-                      <HelpRow
-                        icon={
-                          <Activity size={20} />
-                        }
-                        title="
+                        <HelpRow
+                          icon={
+                            <Activity size={20} />
+                          }
+                          title="
                           Analytics & Recommendations
                         "
-                        description="
+                          description="
                           Understand inventory trends and
                           receive data-driven recommendations.
                         "
-                      />
+                        />
 
-                    </div>
-                  )}
+                      </div>
+                    )}
 
                   {helpDetail === "problem" && (
                     <div className="space-y-5">
@@ -2676,49 +2677,49 @@ function Settings() {
 
                   {legalDetail ===
                     "acceptable" && (
-                    <LegalPage
-                      title="Acceptable Use Policy"
-                      icon={
-                        <FileText size={24} />
-                      }
-                      onBack={
-                        backToSection
-                      }
-                    >
-                      <LegalHeading>
-                        Appropriate Usage
-                      </LegalHeading>
+                      <LegalPage
+                        title="Acceptable Use Policy"
+                        icon={
+                          <FileText size={24} />
+                        }
+                        onBack={
+                          backToSection
+                        }
+                      >
+                        <LegalHeading>
+                          Appropriate Usage
+                        </LegalHeading>
 
-                      <LegalText>
-                        PharmaFlow should be used for
-                        legitimate inventory, pharmaceutical
-                        supply-chain, administrative and
-                        business operations.
-                      </LegalText>
+                        <LegalText>
+                          PharmaFlow should be used for
+                          legitimate inventory, pharmaceutical
+                          supply-chain, administrative and
+                          business operations.
+                        </LegalText>
 
-                      <LegalHeading>
-                        Account Misuse
-                      </LegalHeading>
+                        <LegalHeading>
+                          Account Misuse
+                        </LegalHeading>
 
-                      <LegalText>
-                        Users should not share credentials,
-                        attempt unauthorized access or
-                        intentionally interfere with
-                        platform operations.
-                      </LegalText>
+                        <LegalText>
+                          Users should not share credentials,
+                          attempt unauthorized access or
+                          intentionally interfere with
+                          platform operations.
+                        </LegalText>
 
-                      <LegalHeading>
-                        Business Integrity
-                      </LegalHeading>
+                        <LegalHeading>
+                          Business Integrity
+                        </LegalHeading>
 
-                      <LegalText>
-                        Users should maintain accurate
-                        inventory, medicine, transaction
-                        and supply-chain information.
-                      </LegalText>
+                        <LegalText>
+                          Users should maintain accurate
+                          inventory, medicine, transaction
+                          and supply-chain information.
+                        </LegalText>
 
-                    </LegalPage>
-                  )}
+                      </LegalPage>
+                    )}
 
                   {legalDetail === "cookie" && (
                     <LegalPage
@@ -2766,51 +2767,51 @@ function Settings() {
 
                   {legalDetail ===
                     "disclaimer" && (
-                    <LegalPage
-                      title="Disclaimer"
-                      icon={
-                        <AlertTriangle
-                          size={24}
-                        />
-                      }
-                      onBack={
-                        backToSection
-                      }
-                    >
-                      <LegalHeading>
-                        Software Platform
-                      </LegalHeading>
+                      <LegalPage
+                        title="Disclaimer"
+                        icon={
+                          <AlertTriangle
+                            size={24}
+                          />
+                        }
+                        onBack={
+                          backToSection
+                        }
+                      >
+                        <LegalHeading>
+                          Software Platform
+                        </LegalHeading>
 
-                      <LegalText>
-                        PharmaFlow is a software platform
-                        designed to support inventory and
-                        supply-chain management.
-                      </LegalText>
+                        <LegalText>
+                          PharmaFlow is a software platform
+                          designed to support inventory and
+                          supply-chain management.
+                        </LegalText>
 
-                      <LegalHeading>
-                        Business Decisions
-                      </LegalHeading>
+                        <LegalHeading>
+                          Business Decisions
+                        </LegalHeading>
 
-                      <LegalText>
-                        Inventory, purchasing, sales and
-                        supply-chain decisions remain the
-                        responsibility of the organization
-                        using the platform.
-                      </LegalText>
+                        <LegalText>
+                          Inventory, purchasing, sales and
+                          supply-chain decisions remain the
+                          responsibility of the organization
+                          using the platform.
+                        </LegalText>
 
-                      <LegalHeading>
-                        Regulatory Compliance
-                      </LegalHeading>
+                        <LegalHeading>
+                          Regulatory Compliance
+                        </LegalHeading>
 
-                      <LegalText>
-                        Organizations remain responsible
-                        for compliance with applicable
-                        pharmaceutical and business
-                        regulations.
-                      </LegalText>
+                        <LegalText>
+                          Organizations remain responsible
+                          for compliance with applicable
+                          pharmaceutical and business
+                          regulations.
+                        </LegalText>
 
-                    </LegalPage>
-                  )}
+                      </LegalPage>
+                    )}
 
                 </>
               )}
@@ -2818,10 +2819,9 @@ function Settings() {
             </div>
           </div>
         </div>
-
-      );
-    }
-  }
+      </>
+  );
+}
 
 
 // ==========================================
@@ -3331,10 +3331,9 @@ function NotificationRow({
           rounded-full
           transition
           flex-shrink-0
-          ${
-            enabled
-              ? "bg-blue-600"
-              : "bg-gray-300"
+          ${enabled
+            ? "bg-blue-600"
+            : "bg-gray-300"
           }
         `}
       >
@@ -3348,10 +3347,9 @@ function NotificationRow({
             bg-white
             rounded-full
             transition
-            ${
-              enabled
-                ? "left-7"
-                : "left-1"
+            ${enabled
+              ? "left-7"
+              : "left-1"
             }
           `}
         />
