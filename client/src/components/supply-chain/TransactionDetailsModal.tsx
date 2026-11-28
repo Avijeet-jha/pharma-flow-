@@ -1,43 +1,90 @@
 
-type TransactionFiltersProps = {
-  search: string;
-  onSearchChange: (value: string) => void;
-  status: string;
-  onStatusChange: (value: string) => void;
-  statuses: string[];
-  placeholder?: string;
+import type { ReactNode } from "react";
+import { X } from "lucide-react";
+
+type TransactionDetailsModalProps = {
+  isOpen: boolean;
+  title: string;
+  description?: string;
+  onClose: () => void;
+  children: ReactNode;
+  footer?: ReactNode;
+  maxWidth?: "md" | "lg" | "xl" | "2xl" | "4xl";
 };
 
-export default function TransactionFilters({
-  search,
-  onSearchChange,
-  status,
-  onStatusChange,
-  statuses,
-  placeholder = "Search transactions...",
-}: TransactionFiltersProps) {
-  return (
-    <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row">
-      <input
-        type="search"
-        value={search}
-        onChange={(event) => onSearchChange(event.target.value)}
-        placeholder={placeholder}
-        className="min-w-0 flex-1 rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-blue-500"
-      />
+const maxWidthClasses = {
+  md: "max-w-md",
+  lg: "max-w-lg",
+  xl: "max-w-xl",
+  "2xl": "max-w-2xl",
+  "4xl": "max-w-4xl",
+};
 
-      <select
-        value={status}
-        onChange={(event) => onStatusChange(event.target.value)}
-        className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-500"
+export default function TransactionDetailsModal({
+  isOpen,
+  title,
+  description,
+  onClose,
+  children,
+  footer,
+  maxWidth = "2xl",
+}: TransactionDetailsModalProps) {
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) {
+          onClose();
+        }
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="transaction-modal-title"
+        className={`flex max-h-[90vh] w-full ${maxWidthClasses[maxWidth]} flex-col overflow-hidden rounded-2xl bg-white shadow-2xl`}
       >
-        <option value="ALL">All statuses</option>
-        {statuses.map((item) => (
-          <option key={item} value={item}>
-            {item.replaceAll("_", " ")}
-          </option>
-        ))}
-      </select>
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
+          <div>
+            <h2
+              id="transaction-modal-title"
+              className="text-lg font-bold text-slate-900"
+            >
+              {title}
+            </h2>
+
+            {description && (
+              <p className="mt-1 text-sm text-slate-500">
+                {description}
+              </p>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close modal"
+            className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto p-6">
+          {children}
+        </div>
+
+        {/* Optional Footer */}
+        {footer && (
+          <div className="border-t border-slate-200 bg-slate-50 px-6 py-4">
+            {footer}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,132 +1,25 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Search,
-  Plus,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  Package,
-  Clock,
-  CheckCircle2,
-  Truck,
-  FileText,
-  Building2,
-  AlertCircle,
-  Loader2,
-  Check,
-  Send,
-  ShieldCheck,
-  AlertTriangle,
-  Receipt,
+  Search, Plus, X, ChevronLeft, ChevronRight, Package, Clock, CheckCircle2,
+  Truck, FileText, Building2, AlertCircle, Loader2, Check, Send, ShieldCheck,
+  AlertTriangle, Receipt,
 } from "lucide-react";
-
-const API_BASE_URL = "http://localhost:5000/api";
-
-type Supplier = {
-  id: string;
-  companyName: string;
-  companyType?: string;
-  city?: string;
-  state?: string;
-};
-
-type Medicine = {
-  id: string;
-  medicineName: string;
-  genericName?: string;
-  strength?: string;
-  dosageForm?: string;
-  manufacturer?: string;
-  availableQuantity?: number;
-};
-
-type BatchOption = {
-  id: string;
-  batchNumber: string;
-  manufacturingDate: string;
-  expiryDate: string;
-  mrp: number;
-  quantity: number;
-};
-
-type PurchaseOrderItem = {
-  id: string;
-  medicineId: string;
-  batchId?: string;
-  requestedQuantity: number;
-  quantity: number;
-  unitPrice: number;
-  totalPrice?: number;
-  medicine?: {
-    id?: string;
-    medicineName: string;
-    strength?: string;
-    dosageForm?: string;
-  };
-  batch?: {
-    id: string;
-    batchNumber: string;
-    expiryDate: string;
-    mrp: number;
-  };
-};
-
-type PurchaseOrder = {
-  id: string;
-  orderNumber?: string;
-  status?: string;
-  totalAmount?: number;
-  expectedDate?: string;
-  createdAt?: string;
-  notes?: string;
-  buyerCompanyId?: string;
-  sellerCompanyId?: string;
-
-  sellerCompany?: {
-    id?: string;
-    companyName: string;
-    state?: string;
-  };
-
-  buyerCompany?: {
-    id?: string;
-    companyName: string;
-    state?: string;
-  };
-
-  items?: PurchaseOrderItem[];
-
-  invoice?: {
-    id: string;
-    invoiceNumber: string;
-    status: string;
-    totalAmount: number;
-  };
-
-  dispatches?: {
-    id: string;
-    status: string;
-  }[];
-};
-
-type AvailabilityItem = {
-  medicineId: string;
-  medicineName: string;
-  requestedQuantity: number;
-  availableQuantity: number;
-  minimumRequiredQuantity: number;
-  eligible: boolean;
-};
-
-type AvailabilityData = {
-  purchaseOrderId: string;
-  orderNumber: string;
-  status: string;
-  buyerCompany: string;
-  sellerCompany: string;
-  items: AvailabilityItem[];
-};
+import {
+  getPurchaseOrders,
+  checkPurchaseOrderAvailability,
+  getMedicineBatches,
+  confirmPurchaseOrder,
+  sendPurchaseOrderPaymentReminder,
+  getPurchaseOrderSuppliers,
+  getSupplierMedicineCatalog,
+  createPurchaseRequest,
+  type Supplier,
+  type Medicine,
+  type BatchOption,
+  type PurchaseOrder,
+  type AvailabilityData,
+} from "../../services/purchaseOrder.service";
 
 type ConfirmItemInput = {
   purchaseOrderItemId: string;
@@ -139,16 +32,6 @@ type ConfirmItemInput = {
   discountPercent: number;
   gstPercent: number;
 };
-
-type ApiResponse<T> = {
-  success: boolean;
-  message?: string;
-  data: T;
-};
-
-function getToken() {
-  return localStorage.getItem("token") || sessionStorage.getItem("token") || "";
-}
 
 function getCompanyId() {
   try {
@@ -301,26 +184,11 @@ export default function PurchaseOrderManagement() {
   const fetchPurchaseOrders = useCallback(async () => {
     try {
       setLoadingOrders(true);
-      const token = getToken();
-
-      if (!token) return;
-
-      const response = await fetch(`${API_BASE_URL}/purchase-orders`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const result: ApiResponse<PurchaseOrder[]> = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to fetch purchase orders");
-      }
-
-      setPurchaseOrders(result.data || []);
+      setPurchaseOrders(await getPurchaseOrders());
     } catch (error) {
       console.error("Failed to fetch purchase orders:", error);
       setPurchaseOrders([]);
+      showToast(error instanceof Error ? error.message : "Failed to fetch purchase orders", "error");
     } finally {
       setLoadingOrders(false);
     }
@@ -343,23 +211,7 @@ export default function PurchaseOrderManagement() {
       setCheckingAvailability(true);
       setShowAvailabilityModal(true);
       setAvailabilityData(null);
-
-      const token = getToken();
-      if (!token) throw new Error("Authentication required");
-
-      const response = await fetch(`${API_BASE_URL}/purchase-orders/${orderId}/availability`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        throw new Error(result.message || "Failed to check availability");
-      }
-
-      setAvailabilityData(result.data);
+      setAvailabilityData(await checkPurchaseOrderAvailability(orderId));
     } catch (error) {
       console.error("Availability check failed:", error);
       showToast(error instanceof Error ? error.message : "Availability check failed", "error");
@@ -380,10 +232,6 @@ export default function PurchaseOrderManagement() {
     setLoadingBatches(true);
 
     try {
-      const token = getToken();
-      if (!token) throw new Error("Authentication required");
-
-      // Initialize confirmInputs with default values
       const initialInputs: ConfirmItemInput[] = (order.items || []).map((item) => ({
         purchaseOrderItemId: item.id,
         medicineId: item.medicineId || item.medicine?.id || "",
@@ -395,47 +243,31 @@ export default function PurchaseOrderManagement() {
         discountPercent: 0,
         gstPercent: 12,
       }));
-
       setConfirmInputs(initialInputs);
 
-      // Fetch batches for each medicine
       const batchesMap: Record<string, BatchOption[]> = {};
-
       for (const item of order.items || []) {
         const medId = item.medicineId || item.medicine?.id;
         if (!medId) continue;
-
         try {
-          const bRes = await fetch(`${API_BASE_URL}/medicine-batches/medicine/${medId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const bData = await bRes.json();
-          if (bRes.ok && bData.success && Array.isArray(bData.data)) {
-            batchesMap[medId] = bData.data;
-
-            // Auto-select first batch if available and not already set
-            if (bData.data.length > 0) {
-              setConfirmInputs((prev) =>
-                prev.map((inp) =>
-                  inp.medicineId === medId && !inp.batchId
-                    ? {
-                        ...inp,
-                        batchId: bData.data[0].id,
-                        unitPrice: Number(bData.data[0].mrp) || inp.unitPrice,
-                      }
-                    : inp
-                )
-              );
-            }
+          const batches = await getMedicineBatches(medId);
+          batchesMap[medId] = batches;
+          if (batches.length > 0) {
+            setConfirmInputs((prev) =>
+              prev.map((inp) =>
+                inp.medicineId === medId && !inp.batchId
+                  ? { ...inp, batchId: batches[0].id, unitPrice: Number(batches[0].mrp) || inp.unitPrice }
+                  : inp
+              )
+            );
           }
-        } catch (e) {
-          console.error(`Failed to load batches for medicine ${medId}:`, e);
+        } catch (error) {
+          console.error(`Failed to load batches for medicine ${medId}:`, error);
         }
       }
-
       setMedicineBatchesMap(batchesMap);
-    } catch (err) {
-      console.error("Error setting up confirmation modal:", err);
+    } catch (error) {
+      console.error("Error setting up confirmation modal:", error);
       showToast("Unable to initialize order confirmation", "error");
     } finally {
       setLoadingBatches(false);
@@ -451,9 +283,6 @@ export default function PurchaseOrderManagement() {
 
     try {
       setConfirmingOrder(true);
-      const token = getToken();
-      if (!token) throw new Error("Authentication required");
-
       // Validate inputs
       for (const item of confirmInputs) {
         if (!item.batchId) {
@@ -483,20 +312,7 @@ export default function PurchaseOrderManagement() {
         })),
       };
 
-      const response = await fetch(`${API_BASE_URL}/purchase-orders/${orderToConfirm.id}/confirm`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        throw new Error(result.message || "Failed to confirm purchase order");
-      }
+      await confirmPurchaseOrder(orderToConfirm.id, payload);
 
       showToast("Order confirmed successfully! Invoice generated & Wholesaler notified.");
       setShowConfirmModal(false);
@@ -517,26 +333,11 @@ export default function PurchaseOrderManagement() {
   const handleSendPaymentReminder = async (orderId: string) => {
     try {
       setSendingReminderId(orderId);
-      const token = getToken();
-      if (!token) throw new Error("Authentication required");
-
-      const response = await fetch(`${API_BASE_URL}/purchase-orders/${orderId}/payment-reminder`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        throw new Error(result.message || "Failed to send payment reminder");
-      }
-
+      await sendPurchaseOrderPaymentReminder(orderId);
       showToast("Payment reminder sent successfully to the buyer!");
-    } catch (err) {
-      console.error("Reminder error:", err);
-      showToast(err instanceof Error ? err.message : "Failed to send reminder", "error");
+    } catch (error) {
+      console.error("Reminder error:", error);
+      showToast(error instanceof Error ? error.message : "Failed to send reminder", "error");
     } finally {
       setSendingReminderId(null);
     }
@@ -549,22 +350,11 @@ export default function PurchaseOrderManagement() {
   const fetchSuppliers = async () => {
     try {
       setLoadingSuppliers(true);
-      const token = getToken();
-      if (!token) throw new Error("Authentication required");
-
-      const response = await fetch(`${API_BASE_URL}/supply-chain/partners`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const result: ApiResponse<Supplier[]> = await response.json();
-      if (!response.ok) throw new Error(result.message || "Failed to fetch suppliers");
-
-      setSuppliers(result.data || []);
+      setSuppliers(await getPurchaseOrderSuppliers());
     } catch (error) {
       console.error("Failed to fetch suppliers:", error);
       setSuppliers([]);
+      showToast(error instanceof Error ? error.message : "Failed to fetch suppliers", "error");
     } finally {
       setLoadingSuppliers(false);
     }
@@ -573,31 +363,11 @@ export default function PurchaseOrderManagement() {
   const fetchSupplierCatalog = async (supplierId: string) => {
     try {
       setLoadingMedicines(true);
-      const token = getToken();
-      if (!token) throw new Error("Authentication required");
-
-      const response = await fetch(`${API_BASE_URL}/supply-chain/partners/${supplierId}/catalog`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || "Failed to fetch supplier catalog");
-
-      let medicines: Medicine[] = [];
-      if (Array.isArray(result.data)) {
-        medicines = result.data;
-      } else if (Array.isArray(result.data?.medicines)) {
-        medicines = result.data.medicines;
-      } else if (Array.isArray(result.medicines)) {
-        medicines = result.medicines;
-      }
-
-      setSupplierMedicines(medicines);
+      setSupplierMedicines(await getSupplierMedicineCatalog(supplierId));
     } catch (error) {
       console.error("Failed to fetch catalog:", error);
       setSupplierMedicines([]);
+      showToast(error instanceof Error ? error.message : "Failed to fetch supplier catalog", "error");
     } finally {
       setLoadingMedicines(false);
     }
@@ -636,8 +406,6 @@ export default function PurchaseOrderManagement() {
       setSubmitError("");
       setSubmitSuccess("");
 
-      const token = getToken();
-      if (!token) throw new Error("Authentication required");
       if (!selectedSupplier) throw new Error("Please select a supplier.");
       if (!selectedMedicine) throw new Error("Please select a medicine.");
 
@@ -646,27 +414,12 @@ export default function PurchaseOrderManagement() {
         throw new Error("Please enter a valid whole number greater than 0.");
       }
 
-      const response = await fetch(`${API_BASE_URL}/purchase-requests`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          sellerCompanyId: selectedSupplier.id,
-          preferredDeliveryDate: preferredDeliveryDate || undefined,
-          requirement: requirement.trim() || undefined,
-          items: [
-            {
-              medicineId: selectedMedicine.id,
-              requestedQuantity: parsedQuantity,
-            },
-          ],
-        }),
+      const result = await createPurchaseRequest({
+        sellerCompanyId: selectedSupplier.id,
+        preferredDeliveryDate: preferredDeliveryDate || undefined,
+        requirement: requirement.trim() || undefined,
+        items: [{ medicineId: selectedMedicine.id, requestedQuantity: parsedQuantity }],
       });
-
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || "Failed to send purchase request");
 
       setSubmitSuccess(result.message || "Purchase request sent successfully.");
       showToast("Purchase request sent successfully!");
